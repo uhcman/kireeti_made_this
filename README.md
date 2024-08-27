@@ -1,4 +1,4 @@
- 
+This is an extremely fun game on MakeCode Arcade. I made this during class in school. It took about an hour and a half with tweaking after. The higher the level, the harder the level. 
 
 
 > Open this page at [https://uhcman.github.io/jumpy-platformer/](https://uhcman.github.io/jumpy-platformer/)
