@@ -19,18 +19,29 @@ namespace SpriteKind {
     export const Flier = SpriteKind.create()
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Bumper, function (sprite, otherSprite) {
-    if (sprite.vy > 0 && !(sprite.isHittingTile(CollisionDirection.Bottom)) || sprite.y < otherSprite.top) {
-        otherSprite.destroy(effects.ashes, 250)
-        otherSprite.vy = -50
-        sprite.vy = -2 * pixelsToMeters
-        info.changeScoreBy(1)
-        music.powerUp.play()
+    if (controller.down.isPressed()) {
+        if (heroFacingLeft) {
+            animation.setAction(hero, ActionKind.CrouchLeft)
+        } else {
+            animation.setAction(hero, ActionKind.CrouchRight)
+        }
+    } else if (hero.vy < 20 && !(hero.isHittingTile(CollisionDirection.Bottom))) {
+        if (heroFacingLeft) {
+            animation.setAction(hero, ActionKind.JumpingLeft)
+        } else {
+            animation.setAction(hero, ActionKind.JumpingRight)
+        }
+    } else if (hero.vx < 0) {
+        animation.setAction(hero, ActionKind.RunningLeft)
+    } else if (hero.vx > 0) {
+        animation.setAction(hero, ActionKind.RunningRight)
     } else {
-        info.changeLifeBy(-1)
-        sprite.say("Ow!", invincibilityPeriod)
-        music.powerDown.play()
+        if (heroFacingLeft) {
+            animation.setAction(hero, ActionKind.IdleLeft)
+        } else {
+            animation.setAction(hero, ActionKind.IdleRight)
+        }
     }
-    pause(invincibilityPeriod)
 })
 function initializeAnimations () {
     initializeHeroAnimations()
@@ -834,7 +845,6 @@ function spawnGoals () {
         tiles.setTileAt(value7, assets.tile`tile0`)
     }
 }
-let heroFacingLeft = false
 let coin: Sprite = null
 let playerStartLocation: tiles.Location = null
 let flier: Sprite = null
@@ -852,6 +862,7 @@ let mainIdleLeft: animation.Animation = null
 let doubleJumpSpeed = 0
 let canDoubleJump = false
 let coinAnimation: animation.Animation = null
+let heroFacingLeft = false
 let currentLevel = 0
 let levelCount = 0
 let gravity = 0
@@ -1018,29 +1029,6 @@ game.onUpdate(function () {
     }
     if (hero.isHittingTile(CollisionDirection.Top)) {
         hero.vy = 0
-    }
-    if (controller.down.isPressed()) {
-        if (heroFacingLeft) {
-            animation.setAction(hero, ActionKind.CrouchLeft)
-        } else {
-            animation.setAction(hero, ActionKind.CrouchRight)
-        }
-    } else if (hero.vy < 20 && !(hero.isHittingTile(CollisionDirection.Bottom))) {
-        if (heroFacingLeft) {
-            animation.setAction(hero, ActionKind.JumpingLeft)
-        } else {
-            animation.setAction(hero, ActionKind.JumpingRight)
-        }
-    } else if (hero.vx < 0) {
-        animation.setAction(hero, ActionKind.RunningLeft)
-    } else if (hero.vx > 0) {
-        animation.setAction(hero, ActionKind.RunningRight)
-    } else {
-        if (heroFacingLeft) {
-            animation.setAction(hero, ActionKind.IdleLeft)
-        } else {
-            animation.setAction(hero, ActionKind.IdleRight)
-        }
     }
 })
 // Flier movement
